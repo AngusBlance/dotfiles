@@ -1,4 +1,10 @@
 return {
+  -- Fix venv-selector to use main branch (not regexp)
+  {
+    "linux-cultist/venv-selector.nvim",
+    branch = "main", -- Override LazyVim's regexp branch
+  },
+
   -- Configure Python LSP with basedpyright
   {
     "neovim/nvim-lspconfig",
@@ -17,7 +23,14 @@ return {
                   -- Show useful errors/warnings
                   reportUnusedVariable = "warning",
                   reportUnusedImport = "warning",
-                  reportMissingImports = "error",
+
+                  -- Disable import resolution errors (for local/custom modules)
+                  reportMissingImports = "none", -- Ignore "import X could not be resolved"
+                  reportMissingModuleSource = "none", -- Ignore "stub file not found" errors
+                  reportMissingTypeStubs = "none", -- Ignore "py.typed marker not found" for local modules
+                  reportPrivateImportUsage = "none", -- Allow importing from _private modules
+                  reportShadowedImports = "none", -- Ignore shadowed import warnings
+
                   reportUndefinedVariable = "error",
 
                   -- Disable false positives (common in dynamic Python code)
@@ -81,6 +94,8 @@ return {
             "E501", -- Ignore line-too-long
             "--format",
             "%(path)s:%(row)d:%(col)d: %(code)s %(text)s",
+            "--jobs",
+            "1", -- CRITICAL: Disable parallel processing to prevent runaway processes
           },
         },
       },
