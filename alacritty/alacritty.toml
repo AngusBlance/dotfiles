@@ -1,6 +1,6 @@
-[general]
 import = ["~/.config/alacritty/cappuccin-latte.toml"]
 live_config_reload = true
+shell = { program = "/bin/zsh" }
 
 [window]
 padding = {x = 10, y = 10}
@@ -26,12 +26,10 @@ blink_interval = 750
 thickness = 0.15
 
 [terminal]
-shell = { program = "/bin/zsh" }
 osc52 = "CopyPaste"
 
 [mouse]
 hide_when_typing = false
-# bindings = [] add thing's like click to paste
 
 [hints]
 
@@ -40,4 +38,3 @@ bindings = [{key = "v", mods = "Alt", action = "ToggleViMode"}]
 
 [debug]
 # render_timer = true
-
