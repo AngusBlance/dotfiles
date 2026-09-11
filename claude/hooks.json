@@ -5,7 +5,17 @@
         "hooks": [
           {
             "type": "command",
-            "command": "( command -v afplay >/dev/null && afplay \"$HOME/.claude/sounds/ding.wav\" ) || ( command -v paplay >/dev/null && paplay \"$HOME/.claude/sounds/ding.wav\" ) || ( command -v aplay >/dev/null && aplay -q \"$HOME/.claude/sounds/ding.wav\" ) || printf '\\a' 2>/dev/null"
+            "command": "\"$HOME/.claude/scripts/play-sound.sh\" ding.wav"
+          }
+        ]
+      }
+    ],
+    "Notification": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"$HOME/.claude/scripts/play-sound.sh\" waiting.wav"
           }
         ]
       }
