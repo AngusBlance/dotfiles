@@ -19,6 +19,16 @@
           }
         ]
       }
+    ],
+    "PermissionDenied": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"$HOME/.claude/scripts/play-sound.sh\" denied.wav"
+          }
+        ]
+      }
     ]
   }
 }
