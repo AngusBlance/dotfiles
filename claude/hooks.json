@@ -40,6 +40,16 @@
           }
         ]
       }
+    ],
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "branch=$(git rev-parse --abbrev-ref HEAD 2>/dev/null); if [ -n \"$branch\" ]; then gitstatus=$(git status --short 2>/dev/null); jq -n --arg b \"$branch\" --arg s \"$gitstatus\" '{hookSpecificOutput: {hookEventName: \"UserPromptSubmit\", additionalContext: (\"Git branch: \" + $b + (if $s == \"\" then \" (clean)\" else \"\\nGit status:\\n\" + $s end))}}'; fi"
+          }
+        ]
+      }
     ]
   }
 }
