@@ -60,6 +60,16 @@
           }
         ]
       }
+    ],
+    "PreCompact": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "jq -n '{systemMessage: \"Compacting conversation now - flag anything you want kept before older context gets summarized.\"}'"
+          }
+        ]
+      }
     ]
   }
 }
