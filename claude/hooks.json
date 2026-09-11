@@ -50,6 +50,16 @@
           }
         ]
       }
+    ],
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "today=$(date \"+%A, %B %d %Y\"); branch=$(git rev-parse --abbrev-ref HEAD 2>/dev/null); if [ -n \"$branch\" ]; then gitstatus=$(git status --short 2>/dev/null); if [ -n \"$gitstatus\" ]; then n=$(echo \"$gitstatus\" | wc -l); msg=\"$today — on branch $branch ($n files changed)\"; else msg=\"$today — on branch $branch (clean)\"; fi; else msg=\"$today\"; fi; jq -n --arg m \"$msg\" '{systemMessage: $m}'"
+          }
+        ]
+      }
     ]
   }
 }
