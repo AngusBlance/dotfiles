@@ -5,7 +5,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "\"$HOME/.claude/scripts/play-sound.sh\" ding.wav"
+            "command": ": dotfiles_managed_hook; \"$HOME/.claude/scripts/play-sound.sh\" ding.wav; \"$HOME/.claude/scripts/tmux-flag.sh\""
           }
         ]
       }
@@ -15,7 +15,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "\"$HOME/.claude/scripts/play-sound.sh\" waiting.wav"
+            "command": ": dotfiles_managed_hook; \"$HOME/.claude/scripts/play-sound.sh\" waiting.wav; \"$HOME/.claude/scripts/tmux-flag.sh\""
           }
         ]
       }
@@ -25,7 +25,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "\"$HOME/.claude/scripts/play-sound.sh\" denied.wav"
+            "command": ": dotfiles_managed_hook; \"$HOME/.claude/scripts/play-sound.sh\" denied.wav"
           }
         ]
       }
@@ -36,7 +36,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "mkdir -p \"$HOME/.claude/logs\" 2>/dev/null; jq -r '(now | localtime | strftime(\"%Y-%m-%d %H:%M:%S\")) + \" \" + .tool_input.command' >> \"$HOME/.claude/logs/bash-history.log\" 2>/dev/null; true"
+            "command": ": dotfiles_managed_hook; mkdir -p \"$HOME/.claude/logs\" 2>/dev/null; jq -r '(now | localtime | strftime(\"%Y-%m-%d %H:%M:%S\")) + \" \" + .tool_input.command' >> \"$HOME/.claude/logs/bash-history.log\" 2>/dev/null; true"
           }
         ]
       }
@@ -46,7 +46,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "branch=$(git rev-parse --abbrev-ref HEAD 2>/dev/null); if [ -n \"$branch\" ]; then gitstatus=$(git status --short 2>/dev/null); jq -n --arg b \"$branch\" --arg s \"$gitstatus\" '{hookSpecificOutput: {hookEventName: \"UserPromptSubmit\", additionalContext: (\"Git branch: \" + $b + (if $s == \"\" then \" (clean)\" else \"\\nGit status:\\n\" + $s end))}}'; fi"
+            "command": ": dotfiles_managed_hook; branch=$(git rev-parse --abbrev-ref HEAD 2>/dev/null); if [ -n \"$branch\" ]; then gitstatus=$(git status --short 2>/dev/null); jq -n --arg b \"$branch\" --arg s \"$gitstatus\" '{hookSpecificOutput: {hookEventName: \"UserPromptSubmit\", additionalContext: (\"Git branch: \" + $b + (if $s == \"\" then \" (clean)\" else \"\\nGit status:\\n\" + $s end))}}'; fi; \"$HOME/.claude/scripts/tmux-unflag.sh\""
           }
         ]
       }
@@ -56,7 +56,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "today=$(date \"+%A, %B %d %Y\"); branch=$(git rev-parse --abbrev-ref HEAD 2>/dev/null); if [ -n \"$branch\" ]; then gitstatus=$(git status --short 2>/dev/null); if [ -n \"$gitstatus\" ]; then n=$(echo \"$gitstatus\" | wc -l); msg=\"$today — on branch $branch ($n files changed)\"; else msg=\"$today — on branch $branch (clean)\"; fi; else msg=\"$today\"; fi; jq -n --arg m \"$msg\" '{systemMessage: $m}'"
+            "command": ": dotfiles_managed_hook; today=$(date \"+%A, %B %d %Y\"); branch=$(git rev-parse --abbrev-ref HEAD 2>/dev/null); if [ -n \"$branch\" ]; then gitstatus=$(git status --short 2>/dev/null); if [ -n \"$gitstatus\" ]; then n=$(echo \"$gitstatus\" | wc -l); msg=\"$today — on branch $branch ($n files changed)\"; else msg=\"$today — on branch $branch (clean)\"; fi; else msg=\"$today\"; fi; jq -n --arg m \"$msg\" '{systemMessage: $m}'"
           }
         ]
       }
@@ -66,7 +66,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "jq -n '{systemMessage: \"Compacting conversation now - flag anything you want kept before older context gets summarized.\"}'"
+            "command": ": dotfiles_managed_hook; jq -n '{systemMessage: \"Compacting conversation now - flag anything you want kept before older context gets summarized.\"}'"
           }
         ]
       }
