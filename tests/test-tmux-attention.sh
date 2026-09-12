@@ -52,6 +52,47 @@ TMUX_PANE="$pane" "$UNFLAG"
 attn=$(tmux show-window-options -t "$SESSION:$win2" -v @claude_attn 2>/dev/null)
 assert_eq "@claude_attn unset after clearing" "" "$attn"
 
+echo "test: tmux-flag.sh does NOT suppress just because window_active is true"
+echo "  regression test for a false-negative bug: a window is 'active' within its own"
+echo "  session even when that session has NO client attached at all (e.g. Claude"
+echo "  finishes in a background session nobody is viewing). Checking window_active"
+echo "  alone would wrongly suppress the flag in exactly that case - the fix requires"
+echo "  BOTH window_active AND session_attached > 0 before suppressing."
+tmux select-window -t "$SESSION:$win2"
+attached=$(tmux display-message -p -t "$SESSION:$win2" '#{session_attached}')
+assert_eq "sanity check: this throwaway session really has no attached client" "0" "$attached"
+out=$(TMUX_PANE="$pane" "$FLAG" 2>&1)
+attn=$(tmux show-window-options -t "$SESSION:$win2" -v @claude_attn 2>/dev/null)
+assert_eq "@claude_attn IS set even though window_active is true, since nothing is attached" "1" "$attn"
+assert_eq "bell still fires" "$(printf '\a')" "$out"
+
+echo "test: tmux-flag.sh DOES suppress when a real client is attached and viewing it"
+echo "  uses a control-mode (-C) tmux client, which counts as a genuine attached"
+echo "  client (#{session_attached} > 0) without needing an interactive terminal."
+TMUX_PANE="$pane" "$UNFLAG"
+ctlpipe=$(mktemp -u)
+mkfifo "$ctlpipe"
+(tmux -C attach-session -t "$SESSION" < "$ctlpipe" > /dev/null 2>&1 &)
+exec 4>"$ctlpipe"
+sleep 0.3
+attached=$(tmux display-message -p -t "$SESSION:$win2" '#{session_attached}')
+if [ "$attached" = "0" ]; then
+  echo "  SKIP - could not get a control-mode client to attach in this environment"
+else
+  tmux select-window -t "$SESSION:$win2"
+  out=$(TMUX_PANE="$pane" "$FLAG" 2>&1)
+  # Note: select-window above also fires the *global* after-select-window
+  # hook from the real tmux.conf (it's -g, shared across every session on
+  # this server), which independently sets @claude_attn to "0" - same
+  # falsy-render check as the other tests, rather than asserting raw empty.
+  rendered=$(tmux display-message -p -t "$SESSION:$win2" "#{?@claude_attn,ON,off}")
+  assert_eq "@claude_attn renders as off: window is active AND a client is genuinely attached" "off" "$rendered"
+  assert_eq "bell still fires even when suppressing the flag" "$(printf '\a')" "$out"
+fi
+exec 4>&-
+rm -f "$ctlpipe"
+tmux select-window -t "$SESSION:$win1"
+
 echo "test: the after-select-window hook (tmux/tmux.conf) actually clears the flag on switch"
 echo "  regression test for: 'set-window-option -t \"#{window_id}\" ...' silently failing"
 echo "  with 'no such window: #{window_id}' - the hook command must target the current"
@@ -69,6 +110,47 @@ else
   # "cleared" for rendering purposes.
   rendered=$(tmux display-message -p -t "$SESSION:$win2" "#{?@claude_attn,ON,off}")
   assert_eq "@claude_attn renders as off after switching to the window" "off" "$rendered"
+fi
+
+echo "test: the client-session-changed hook clears the flag on a cross-SESSION switch"
+echo "  regression test for a real gap: after-select-window only fires when switching"
+echo "  windows WITHIN a session - switching to a different session entirely (e.g. via"
+echo "  the tmux-sessionx binding this repo uses) doesn't touch it, so a flagged window"
+echo "  in another session you switch to would never clear without this second hook."
+session_hook_cmd=$(grep '^set-hook -g client-session-changed' "$DOTFILES/tmux/tmux.conf" | sed -E "s/^set-hook -g client-session-changed '(.*)'$/\1/")
+if [ -z "$session_hook_cmd" ]; then
+  assert_eq "found the client-session-changed hook command in tmux.conf" "found" "not found"
+else
+  SESSION2="dotfiles_test_attn2_$$"
+  tmux new-session -d -s "$SESSION2" -x 80 -y 24
+  ctlpipe=$(mktemp -u)
+  mkfifo "$ctlpipe"
+  (tmux -C attach-session -t "$SESSION" < "$ctlpipe" > /dev/null 2>&1 &)
+  exec 4>"$ctlpipe"
+  sleep 0.3
+  client_name=$(tmux list-clients -t "$SESSION" -F '#{client_name}' | head -1)
+  if [ -z "$client_name" ]; then
+    echo "  SKIP - could not get a control-mode client to attach in this environment"
+  else
+    tmux set-hook -t "$SESSION" client-session-changed "$session_hook_cmd"
+    tmux set-hook -t "$SESSION2" client-session-changed "$session_hook_cmd"
+    # Set the flag directly (not via tmux-flag.sh) - this test is about the
+    # clearing hook specifically, not flag.sh's own suppression logic
+    # (covered separately above), and an earlier test's control-mode client
+    # may still be lingering attached here, which would otherwise confound it.
+    tmux set-window-option -t "$SESSION:$win2" @claude_attn 1
+    attn_before=$(tmux show-window-options -t "$SESSION:$win2" -v @claude_attn 2>/dev/null)
+    tmux switch-client -c "$client_name" -t "$SESSION2"
+    sleep 0.2
+    tmux switch-client -c "$client_name" -t "$SESSION"
+    sleep 0.2
+    rendered=$(tmux display-message -p -t "$SESSION:$win2" "#{?@claude_attn,ON,off}")
+    assert_eq "sanity check: flag was actually set before switching sessions" "1" "$attn_before"
+    assert_eq "@claude_attn renders as off after switching sessions away and back" "off" "$rendered"
+  fi
+  exec 4>&-
+  rm -f "$ctlpipe"
+  tmux kill-session -t "$SESSION2" 2>/dev/null || true
 fi
 
 echo
