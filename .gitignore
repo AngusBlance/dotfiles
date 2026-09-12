@@ -1,2 +1,3 @@
 *.deb
 a.out
+tmux/plugins/
