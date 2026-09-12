@@ -5,7 +5,68 @@
         "hooks": [
           {
             "type": "command",
-            "command": "( command -v afplay >/dev/null && afplay \"$HOME/.claude/sounds/ding.wav\" ) || ( command -v paplay >/dev/null && paplay \"$HOME/.claude/sounds/ding.wav\" ) || ( command -v aplay >/dev/null && aplay -q \"$HOME/.claude/sounds/ding.wav\" ) || printf '\\a' 2>/dev/null"
+            "command": "\"$HOME/.claude/scripts/play-sound.sh\" ding.wav"
+          }
+        ]
+      }
+    ],
+    "Notification": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"$HOME/.claude/scripts/play-sound.sh\" waiting.wav"
+          }
+        ]
+      }
+    ],
+    "PermissionDenied": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"$HOME/.claude/scripts/play-sound.sh\" denied.wav"
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "mkdir -p \"$HOME/.claude/logs\" 2>/dev/null; jq -r '(now | localtime | strftime(\"%Y-%m-%d %H:%M:%S\")) + \" \" + .tool_input.command' >> \"$HOME/.claude/logs/bash-history.log\" 2>/dev/null; true"
+          }
+        ]
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "branch=$(git rev-parse --abbrev-ref HEAD 2>/dev/null); if [ -n \"$branch\" ]; then gitstatus=$(git status --short 2>/dev/null); jq -n --arg b \"$branch\" --arg s \"$gitstatus\" '{hookSpecificOutput: {hookEventName: \"UserPromptSubmit\", additionalContext: (\"Git branch: \" + $b + (if $s == \"\" then \" (clean)\" else \"\\nGit status:\\n\" + $s end))}}'; fi"
+          }
+        ]
+      }
+    ],
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "today=$(date \"+%A, %B %d %Y\"); branch=$(git rev-parse --abbrev-ref HEAD 2>/dev/null); if [ -n \"$branch\" ]; then gitstatus=$(git status --short 2>/dev/null); if [ -n \"$gitstatus\" ]; then n=$(echo \"$gitstatus\" | wc -l); msg=\"$today — on branch $branch ($n files changed)\"; else msg=\"$today — on branch $branch (clean)\"; fi; else msg=\"$today\"; fi; jq -n --arg m \"$msg\" '{systemMessage: $m}'"
+          }
+        ]
+      }
+    ],
+    "PreCompact": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "jq -n '{systemMessage: \"Compacting conversation now - flag anything you want kept before older context gets summarized.\"}'"
           }
         ]
       }
