@@ -6,5 +6,12 @@
 install_zsh() {
   link_config "$DOTFILES/zsh/.zshenv" "$HOME/.zshenv"
   link_config "$DOTFILES/zsh/.zshrc" "$HOME/.config/zsh/.zshrc"
-  link_config "$DOTFILES/zsh/dependancies.sh" "$HOME/.config/zsh/dependancies.sh"
+
+  if command -v starship > /dev/null 2>&1; then
+    echo "  starship already installed"
+  else
+    curl -sS https://starship.rs/install.sh | sh -s -- --yes > /dev/null 2>&1 \
+      && echo "  starship installed" \
+      || echo "  warning: starship install failed"
+  fi
 }
