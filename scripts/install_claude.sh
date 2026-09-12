@@ -1,33 +1,12 @@
 #!/usr/bin/env bash
+# Installs the Claude Code hooks from claude/hooks.json, plus the sounds and
+# scripts they reference. Merges into settings.json rather than symlinking it,
+# since that file holds other settings too.
 #
-# ==============================================================================
-#  install_claude_ding
-# ==============================================================================
-#  Installs the Claude Code hooks defined in claude/hooks.json plus every
-#  sound file they reference and the shared claude/scripts/*.sh helpers.
-#
-#  Unlike the other install_* scripts, this one doesn't use link_config —
-#  ~/.claude/settings.json is a single JSON file holding a bunch of your
-#  OTHER settings too (theme, permissions, hooks you've added by hand), so
-#  symlinking the whole file would mean the repo owns settings it has no
-#  business owning. Instead this function reads, merges, and writes back —
-#  it never blindly overwrites the file, and merges one hook EVENT at a
-#  time (Stop, Notification, ...) so adding a new event to hooks.json is
-#  the only thing a future you needs to do — this loop picks it up
-#  automatically.
-#
-#  UPSERT, not append-if-missing: every command this repo installs is
-#  prefixed with a marker (`: dotfiles_managed_hook; ...` — `:` is bash's
-#  no-op builtin, so the marker text does nothing at runtime beyond being
-#  greppable). Before adding our current hook for an event, we strip out
-#  any EXISTING entry for that event carrying the same marker, then add
-#  the current one fresh. Hooks WITHOUT the marker (ones you added by hand,
-#  outside this repo) are left alone. Without this, re-running install.sh
-#  after this repo changes what a hook's command actually does — as
-#  opposed to adding a brand new event — would append a second copy
-#  alongside the stale one instead of replacing it, since the old and new
-#  command strings no longer match each other.
-# ==============================================================================
+# Upserts by marker (": dotfiles_managed_hook; ..." - a bash no-op prefix, no
+# runtime effect) rather than exact command match, so editing a hook's command
+# replaces the old entry instead of duplicating it. Hooks without the marker
+# (added by hand) are left alone.
 install_claude_ding() {
   local claude_dir="$HOME/.claude"
   local settings="$claude_dir/settings.json"
@@ -46,8 +25,6 @@ install_claude_ding() {
     new_group=$(jq --arg e "$event" '.hooks[$e]' "$hooks_src")
     new_cmd=$(echo "$new_group" | jq -r '.[0].hooks[0].command')
 
-    # Our own previous entry for this event, if any (identified by marker,
-    # not by exact command match - the whole point is that it may differ).
     old_marked_cmd=$(jq -r --arg e "$event" \
       '(((.hooks[$e]) // [])[]?.hooks[]? | select(.command | startswith(": dotfiles_managed_hook;")) | .command) // empty' \
       "$settings")

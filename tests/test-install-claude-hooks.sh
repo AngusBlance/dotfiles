@@ -24,8 +24,6 @@ cleanup() { rm -rf "$FAKE_HOME"; }
 trap cleanup EXIT
 
 run_install_claude() {
-  # install_claude_ding references $DOTFILES directly and expects to be
-  # sourced (like install.sh does), not executed as a standalone script.
   HOME="$FAKE_HOME" bash -c '
     DOTFILES="'"$DOTFILES"'"
     source "$DOTFILES/scripts/install_claude.sh"
@@ -44,9 +42,6 @@ count=$(jq '.hooks.Stop | length' "$FAKE_HOME/.claude/settings.json")
 assert_eq "still exactly one Stop hook entry after a repeat run" "1" "$count"
 
 echo "test: an upgrade (the managed command's content changes) REPLACES, not duplicates"
-echo "  regression test for: editing an existing hook's command in hooks.json used to"
-echo "  leave the old command string installed (dedup was exact-string-match) and just"
-echo "  append the new one alongside it, so e.g. ding.wav would play twice on Stop."
 jq '.hooks.Stop[0].hooks[0].command = ": dotfiles_managed_hook; echo this-is-the-old-pre-upgrade-command"' \
   "$FAKE_HOME/.claude/settings.json" > "$FAKE_HOME/.claude/settings.json.tmp"
 mv "$FAKE_HOME/.claude/settings.json.tmp" "$FAKE_HOME/.claude/settings.json"
