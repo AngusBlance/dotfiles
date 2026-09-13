@@ -1,6 +1,7 @@
 return {
 	"nvim-telescope/telescope.nvim",
-	branch = "0.1.x", -- use stable release branch
+	-- 0.1.x calls nvim-treesitter's old master-branch API for previews; master uses Neovim's built-in treesitter.
+	branch = "master",
 	dependencies = {
 		"nvim-lua/plenary.nvim",
 		{ "nvim-telescope/telescope-fzf-native.nvim", build = "make" },
