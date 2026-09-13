@@ -44,6 +44,7 @@ echo "== tmux ==";      install_tmux
 echo "== alacritty =="; install_alacritty
 echo "== zsh ==";       install_zsh
 echo "== claude ==";    install_claude_ding
+                        install_claude_config
 
 echo
 echo "Done. Restart your shell (or 'exec zsh') to pick up zsh changes."

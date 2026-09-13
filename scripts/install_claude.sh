@@ -49,3 +49,49 @@ install_claude_ding() {
     fi
   done
 }
+
+# Symlinks the synced skills and global CLAUDE.md into ~/.claude, then merges
+# claude/settings.shared.json into settings.json. Shared keys override; the
+# permission lists are combined (order kept, duplicates dropped) so
+# machine-local permissions and every other local setting survive.
+install_claude_config() {
+  local claude_dir="$HOME/.claude"
+  local settings="$claude_dir/settings.json"
+  local shared="$DOTFILES/claude/settings.shared.json"
+
+  mkdir -p "$claude_dir"
+  link_config "$DOTFILES/claude/skills" "$claude_dir/skills"
+  link_config "$DOTFILES/claude/CLAUDE.md" "$claude_dir/CLAUDE.md"
+
+  [ -s "$settings" ] || echo '{}' > "$settings"
+  if ! jq -e 'type == "object"' "$settings" > /dev/null 2>&1; then
+    echo "  error: $settings is not a JSON object, left unchanged" >&2
+    return 1
+  fi
+
+  local merged
+  # Checked explicitly: without set -e a failed jq would leave merged empty
+  # and the write below would wipe settings.json.
+  if ! merged=$(jq --slurpfile shared "$shared" '
+    def union($a; $b): reduce ($a + $b)[] as $x ([]; if any(.[]; . == $x) then . else . + [$x] end);
+    . as $cur
+    | ($cur * $shared[0])
+    | reduce ("allow", "deny", "ask") as $k (.;
+        if ($cur.permissions[$k] != null) or ($shared[0].permissions[$k] != null)
+        then .permissions[$k] = union($cur.permissions[$k] // []; $shared[0].permissions[$k] // [])
+        else . end)
+  ' "$settings"); then
+    echo "  error: could not merge $shared into $settings, left unchanged" >&2
+    return 1
+  fi
+
+  if [ "$merged" = "$(jq . "$settings")" ]; then
+    echo "  shared settings up to date, skipping"
+    return 0
+  fi
+
+  # Separate from install_claude_ding's settings.json.bak, which it rewrites every run.
+  cp "$settings" "$settings.shared.bak"
+  printf '%s\n' "$merged" > "$settings"
+  echo "  shared settings merged"
+}

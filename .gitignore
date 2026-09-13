@@ -1,3 +1,27 @@
 *.deb
 a.out
 tmux/plugins/
+
+# Claude Code local state. Claude never writes these into claude/ itself (only
+# the symlinked skills/ and CLAUDE.md get runtime writes); this guards against
+# copying them in from ~/.claude by hand.
+.credentials.json
+claude/settings.json
+claude/settings.local.json
+claude/*.bak
+claude/projects/
+claude/history.jsonl
+claude/sessions/
+claude/session-env/
+claude/shell-snapshots/
+claude/file-history/
+claude/todos/
+claude/cache/
+claude/image-cache/
+claude/paste-cache/
+claude/logs/
+claude/backups/
+claude/downloads/
+claude/ide/
+claude/*-cache.json
+claude/.last-*
