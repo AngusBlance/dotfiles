@@ -6,6 +6,7 @@
 install_zsh() {
   link_config "$DOTFILES/zsh/.zshenv" "$HOME/.zshenv"
   link_config "$DOTFILES/zsh/.zshrc" "$HOME/.config/zsh/.zshrc"
+  link_config "$DOTFILES/starship/starship.toml" "$HOME/.config/starship.toml"
 
   if command -v starship > /dev/null 2>&1; then
     echo "  starship already installed"
