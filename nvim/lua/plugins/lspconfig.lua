@@ -15,9 +15,6 @@ return {
     opts = {
         servers = {
             clangd = {
-                keys = {
-                    { "<leader>ch", "<cmd>ClangdSwitchSourceHeader<cr>", desc = "Switch Source/Header (C/C++)" },
-                },
                 root_markers = {
                     "compile_commands.json",
                     "compile_flags.txt",
@@ -67,12 +64,26 @@ return {
 
         require("mason-lspconfig").setup({
             ensure_installed = vim.tbl_keys(opts.servers),
-            automatic_installation = true,
         })
 
         for name, server_opts in pairs(opts.servers) do
             vim.lsp.config(name, vim.tbl_deep_extend("force", { capabilities = capabilities }, server_opts))
         end
         vim.lsp.enable(vim.tbl_keys(opts.servers))
+
+        -- nvim-lspconfig's clangd config creates :LspClangdSwitchSourceHeader per buffer on attach.
+        vim.api.nvim_create_autocmd("LspAttach", {
+            callback = function(args)
+                local client = vim.lsp.get_client_by_id(args.data.client_id)
+                if client and client.name == "clangd" then
+                    vim.keymap.set(
+                        "n",
+                        "<leader>ch",
+                        "<cmd>LspClangdSwitchSourceHeader<cr>",
+                        { buffer = args.buf, desc = "Switch Source/Header (C/C++)" }
+                    )
+                end
+            end,
+        })
     end,
 }
