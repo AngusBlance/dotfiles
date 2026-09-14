@@ -53,8 +53,19 @@ vim.api.nvim_create_autocmd("BufWritePre", {
             local placeholder = "@@CODEBLOCK_" .. idx .. "@@"
             local formatted = vim.api.nvim_buf_get_lines(0, 0, -1, false)
             for j, l in ipairs(formatted) do
-                if l:find(placeholder, 1, true) then
-                    vim.api.nvim_buf_set_lines(0, j - 1, j, false, block)
+                local s, e = l:find(placeholder, 1, true)
+                if s then
+                    -- SuperHTML can join neighbours onto the placeholder line (e.g. "@@CODEBLOCK_1@@</body>"),
+                    -- so only swap the placeholder itself and keep any tags around it.
+                    local restored = vim.deepcopy(block)
+                    local before, after = l:sub(1, s - 1), l:sub(e + 1)
+                    if before:match("%S") then
+                        restored[1] = before .. restored[1]
+                    end
+                    if after:match("%S") then
+                        table.insert(restored, vim.trim(after))
+                    end
+                    vim.api.nvim_buf_set_lines(0, j - 1, j, false, restored)
                     break
                 end
             end
