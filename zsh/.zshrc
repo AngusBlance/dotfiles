@@ -43,14 +43,20 @@ setopt COMPLETE_IN_WORD
 setopt ALWAYS_TO_END
 
 # fzf fuzzy completion (Ctrl-R history, Ctrl-T files, Alt-C cd)
-[ -f /usr/share/doc/fzf/examples/completion.zsh ] && source /usr/share/doc/fzf/examples/completion.zsh
-[ -f /usr/share/doc/fzf/examples/key-bindings.zsh ] && source /usr/share/doc/fzf/examples/key-bindings.zsh
+# Homebrew (macOS) and apt (Linux/WSL) install these in different places.
+for f in /opt/homebrew/opt/fzf/shell/{completion,key-bindings}.zsh \
+         /usr/share/doc/fzf/examples/{completion,key-bindings}.zsh; do
+  [ -f "$f" ] && source "$f"
+done
 
 # Autosuggestions: try history first, then fall back to the completion system
 ZSH_AUTOSUGGEST_STRATEGY=(history completion)
 
 # Plugins (syntax-highlighting must be sourced last)
-[ -f /usr/share/zsh-autosuggestions/zsh-autosuggestions.zsh ] && source /usr/share/zsh-autosuggestions/zsh-autosuggestions.zsh
-[ -f /usr/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh ] && source /usr/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+for plugin in zsh-autosuggestions zsh-syntax-highlighting; do
+  for dir in /opt/homebrew/share /usr/share; do
+    [ -f "$dir/$plugin/$plugin.zsh" ] && source "$dir/$plugin/$plugin.zsh" && break
+  done
+done
 
 eval "$(starship init zsh)"
