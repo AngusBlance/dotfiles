@@ -1,5 +1,20 @@
 -- lua/plugins/treesitter.lua
-local parsers = { "c", "cpp", "lua", "vim", "vimdoc", "query", "markdown", "markdown_inline", "python" }
+local parsers = {
+    "c",
+    "cpp",
+    "lua",
+    "vim",
+    "vimdoc",
+    "query",
+    "markdown",
+    "markdown_inline",
+    "python",
+    "javascript",
+    "typescript",
+    "tsx",
+    "html",
+    "css",
+}
 local max_filesize = 100 * 1024 -- 100 KB
 
 return {
