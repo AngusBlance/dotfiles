@@ -59,4 +59,12 @@ for plugin in zsh-autosuggestions zsh-syntax-highlighting; do
   done
 done
 
+# In tmux, redraw the status bar right after cd so the path and git pills
+# update now instead of on the next status-interval tick (up to 5s).
+if [[ -n $TMUX ]]; then
+  autoload -Uz add-zsh-hook
+  _tmux_status_refresh() { tmux refresh-client -S 2>/dev/null }
+  add-zsh-hook chpwd _tmux_status_refresh
+fi
+
 eval "$(starship init zsh)"
