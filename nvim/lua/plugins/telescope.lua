@@ -14,7 +14,7 @@ return {
             require("telescope.builtin").find_files({
                 cwd = vim.fn.expand("~"),
             })
-        end, { desc = "Find Files (Root Dir)" })
+        end, { desc = "Find Files (Home)" })
         vim.keymap.set("n", "<leader>fg", builtin.git_files, { desc = "Find Git Files" })
         vim.keymap.set("n", "<leader>fp", builtin.live_grep, { desc = "Search in Project (grep)" })
         vim.keymap.set("n", "<leader>fr", builtin.oldfiles, { desc = "Recent Files" })
