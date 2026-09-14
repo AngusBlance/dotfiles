@@ -48,11 +48,19 @@ return {
 
     {
         "stevearc/conform.nvim",
+        event = "BufWritePre",
+        cmd = "ConformInfo",
         opts = {
+            formatters_by_ft = {
+                lua = { "stylua" },
+            },
+            -- Single format_on_save for every conform filetype (python.lua only adds formatters).
             format_on_save = function(bufnr)
-                -- Format Lua files automatically; fallback to LSP when needed.
-                if vim.bo[bufnr].filetype == "lua" then
-                    return { lsp_fallback = true, timeout_ms = 500 }
+                local ft = vim.bo[bufnr].filetype
+                if ft == "lua" then
+                    return { lsp_format = "fallback", timeout_ms = 500 }
+                elseif ft == "python" then
+                    return { lsp_format = "never", timeout_ms = 3000 }
                 end
             end,
             notify_on_error = false,

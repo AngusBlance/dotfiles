@@ -1,9 +1,8 @@
 return {
     {
         "mason-org/mason.nvim",
-        config = function()
-            require("mason").setup()
-        end,
+        -- lazy passes the merged opts (e.g. ui.border from luaLsp.lua) to require("mason").setup().
+        opts = {},
     },
     {
         "WhoIsSethDaniel/mason-tool-installer.nvim",
