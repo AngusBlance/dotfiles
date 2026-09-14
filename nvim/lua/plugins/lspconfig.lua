@@ -33,7 +33,9 @@ return {
                     "--clang-tidy",
                     "--header-insertion=iwyu",
                     "--completion-style=detailed",
-                    "--fallback-style=llvm",
+                    -- Named style with 4-space indent for projects without a .clang-format
+                    -- (clangd only accepts style names here, not inline {IndentWidth: 4}).
+                    "--fallback-style=webkit",
                 },
                 init_options = {
                     usePlaceholders = true,

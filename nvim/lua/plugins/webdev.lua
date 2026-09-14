@@ -48,6 +48,10 @@ vim.api.nvim_create_autocmd("BufWritePre", {
         -- Format buffer with SuperHTML
         vim.lsp.buf.format({ async = false })
 
+        -- SuperHTML always indents with tabs; convert to spaces before the code blocks go back in.
+        vim.bo.expandtab = true
+        vim.cmd("silent! retab")
+
         -- Restore preserved code blocks by matching placeholders, not line numbers
         for idx, block in ipairs(code_blocks) do
             local placeholder = "@@CODEBLOCK_" .. idx .. "@@"

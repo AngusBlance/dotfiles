@@ -54,6 +54,21 @@ return {
             formatters_by_ft = {
                 lua = { "stylua" },
             },
+            formatters = {
+                stylua = {
+                    -- stylua defaults to tabs; use 4 spaces unless the project ships its own stylua config.
+                    prepend_args = function(_, ctx)
+                        local config = vim.fs.find(
+                            { "stylua.toml", ".stylua.toml" },
+                            { upward = true, path = ctx.dirname }
+                        )
+                        if #config > 0 then
+                            return {}
+                        end
+                        return { "--indent-type", "Spaces", "--indent-width", "4" }
+                    end,
+                },
+            },
             -- Single format_on_save for every conform filetype (python.lua only adds formatters).
             format_on_save = function(bufnr)
                 local ft = vim.bo[bufnr].filetype
