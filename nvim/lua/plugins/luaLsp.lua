@@ -3,7 +3,7 @@ return {
     -- Mason: install external tools (LSPs, linters, formatters)
     ---------------------------------------------------------------------
     {
-        "williamboman/mason.nvim",
+        "mason-org/mason.nvim",
         build = ":MasonUpdate",
         opts = {
             ui = {
@@ -35,7 +35,7 @@ return {
     -- Install formatters/linters via Mason
     {
         "WhoIsSethDaniel/mason-tool-installer.nvim",
-        dependencies = { "williamboman/mason.nvim" },
+        dependencies = { "mason-org/mason.nvim" },
         opts = {
             ensure_installed = { "stylua", "selene" },
             auto_update = false,

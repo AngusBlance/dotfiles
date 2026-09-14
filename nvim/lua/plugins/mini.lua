@@ -1,7 +1,7 @@
 -- Mini tabline + statusline with git info
 return {
     {
-        "echasnovski/mini.nvim",
+        "nvim-mini/mini.nvim",
         enabled = true,
         config = function()
             require("mini.git").setup({})

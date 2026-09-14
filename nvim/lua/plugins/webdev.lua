@@ -65,7 +65,7 @@ vim.api.nvim_create_autocmd("BufWritePre", {
 return {
     {
         "WhoIsSethDaniel/mason-tool-installer.nvim",
-        dependencies = { "williamboman/mason.nvim" },
+        dependencies = { "mason-org/mason.nvim" },
         opts = {
             ensure_installed = { "superhtml" },
         },

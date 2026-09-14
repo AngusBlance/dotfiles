@@ -38,7 +38,7 @@ return {
     {
         -- nvim-treesitter's main branch compiles parsers with the tree-sitter CLI.
         "WhoIsSethDaniel/mason-tool-installer.nvim",
-        dependencies = { "williamboman/mason.nvim" },
+        dependencies = { "mason-org/mason.nvim" },
         opts = {
             ensure_installed = { "tree-sitter-cli" },
         },

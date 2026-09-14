@@ -9,7 +9,7 @@ vim.api.nvim_create_autocmd("BufWritePre", {
 return {
     "neovim/nvim-lspconfig",
     dependencies = {
-        "williamboman/mason-lspconfig.nvim",
+        "mason-org/mason-lspconfig.nvim",
     },
     -- Language files (luaLsp.lua, webdev.lua, ...) extend opts.servers with their own entries.
     opts = {
