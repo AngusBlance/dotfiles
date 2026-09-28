@@ -200,13 +200,18 @@ fi
 # Homebrew keeps these under $HOMEBREW_PREFIX/opt/fzf/shell, Debian under
 # /usr/share/doc/fzf/examples.
 #
-# ONLY key-bindings.zsh. fzf's completion.zsh rebinds Tab to fzf-completion,
-# which swallows zsh's own menu selection - the completion list still appears
-# but the arrow keys never enter it, breaking FEATURE 3. key-bindings.zsh is a
-# separate file and keeps Ctrl-R, Ctrl-T and Alt-C. The cost is fzf's `**<Tab>`
-# fuzzy trigger, which is worth less than an arrow-navigable menu.
+# completion.zsh rebinds Tab to fzf-completion, which looks alarming next to
+# FEATURE 3's menu, but the two coexist: with no `**` trigger on the word
+# fzf-completion falls straight through to expand-or-complete, so the second
+# Tab still enters menu selection and the arrow keys work. Verified by hand.
+# Keeping it buys the `**<Tab>` fuzzy trigger (`vim **<Tab>`, `cd **<Tab>`).
+#
+# Note the menu needs Tab TWICE: the first completes the common prefix and
+# lists, the second enters the arrow-navigable menu. That is stock zsh
+# behaviour with AUTO_LIST, not something fzf causes.
 for _dir in "${HOMEBREW_PREFIX:-/nonexistent}/opt/fzf/shell" /usr/share/doc/fzf/examples; do
   if [ -d "$_dir" ]; then
+    [ -f "$_dir/completion.zsh" ]   && source "$_dir/completion.zsh"
     [ -f "$_dir/key-bindings.zsh" ] && source "$_dir/key-bindings.zsh"
     break
   fi
