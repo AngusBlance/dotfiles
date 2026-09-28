@@ -199,9 +199,14 @@ fi
 #==============================================================================
 # Homebrew keeps these under $HOMEBREW_PREFIX/opt/fzf/shell, Debian under
 # /usr/share/doc/fzf/examples.
+#
+# ONLY key-bindings.zsh. fzf's completion.zsh rebinds Tab to fzf-completion,
+# which swallows zsh's own menu selection - the completion list still appears
+# but the arrow keys never enter it, breaking FEATURE 3. key-bindings.zsh is a
+# separate file and keeps Ctrl-R, Ctrl-T and Alt-C. The cost is fzf's `**<Tab>`
+# fuzzy trigger, which is worth less than an arrow-navigable menu.
 for _dir in "${HOMEBREW_PREFIX:-/nonexistent}/opt/fzf/shell" /usr/share/doc/fzf/examples; do
   if [ -d "$_dir" ]; then
-    [ -f "$_dir/completion.zsh" ]   && source "$_dir/completion.zsh"
     [ -f "$_dir/key-bindings.zsh" ] && source "$_dir/key-bindings.zsh"
     break
   fi
