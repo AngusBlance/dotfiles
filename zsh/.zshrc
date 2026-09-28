@@ -234,7 +234,33 @@ unset _dir
 ZSH_AUTOSUGGEST_STRATEGY=(history completion)
 ZSH_AUTOSUGGEST_BUFFER_MAX_SIZE=20   # no suggestions on very long lines
 
-ZSH_HIGHLIGHT_HIGHLIGHTERS=(main brackets)
+# main      commands valid/invalid, paths, quotes, options, redirections
+# brackets  matched pairs coloured by depth, unmatched ones red
+# pattern   whole-phrase matches, used for the rm -rf guard below
+ZSH_HIGHLIGHT_HIGHLIGHTERS=(main brackets pattern)
+
+# Catppuccin Latte, the same hex values tmux.conf uses, so the shell and the
+# status bar read as one theme. Worth overriding rather than leaving alone:
+# the plugin's defaults assume a dark terminal, and four of them - quotes,
+# reserved words and redirections - are plain `yellow`, which on Latte's
+# near-white background is close to unreadable.
+typeset -gA ZSH_HIGHLIGHT_STYLES
+ZSH_HIGHLIGHT_STYLES[unknown-token]='fg=#d20f39,bold'          # red
+ZSH_HIGHLIGHT_STYLES[reserved-word]='fg=#8839ef'               # mauve
+ZSH_HIGHLIGHT_STYLES[command]='fg=#40a02b'                     # green
+ZSH_HIGHLIGHT_STYLES[builtin]='fg=#40a02b'
+ZSH_HIGHLIGHT_STYLES[function]='fg=#40a02b'
+ZSH_HIGHLIGHT_STYLES[alias]='fg=#40a02b'
+ZSH_HIGHLIGHT_STYLES[precommand]='fg=#40a02b,underline'
+ZSH_HIGHLIGHT_STYLES[path]='fg=#4c4f69,underline'              # text
+ZSH_HIGHLIGHT_STYLES[globbing]='fg=#1e66f5'                    # blue
+ZSH_HIGHLIGHT_STYLES[single-quoted-argument]='fg=#df8e1d'      # yellow
+ZSH_HIGHLIGHT_STYLES[double-quoted-argument]='fg=#df8e1d'
+ZSH_HIGHLIGHT_STYLES[redirection]='fg=#fe640b'                 # peach
+ZSH_HIGHLIGHT_STYLES[comment]='fg=#8c8fa1'                     # overlay1
+ZSH_HIGHLIGHT_STYLES[assign]='fg=#4c4f69'
+ZSH_HIGHLIGHT_STYLES[dollar-quoted-argument]='fg=#df8e1d'      # $'...' strings
+ZSH_HIGHLIGHT_STYLES[bracket-level-4]='fg=#179299'             # teal, was yellow
 
 for _plugin in zsh-autosuggestions zsh-syntax-highlighting; do
   for _base in "$ZDOTDIR/plugins" "${HOMEBREW_PREFIX:-/nonexistent}/share" /usr/share; do
@@ -245,6 +271,17 @@ for _plugin in zsh-autosuggestions zsh-syntax-highlighting; do
   done
 done
 unset _plugin _base
+
+# A destructive-command guard: rm -rf and friends get a red block behind them,
+# so a mistyped path is visible before Enter rather than after.
+#
+# Set AFTER the plugin loads, and never pre-declared here: the pattern
+# highlighter declares ZSH_HIGHLIGHT_PATTERNS as an ASSOCIATIVE array, so
+# declaring it as a normal one above gets silently re-declared and emptied.
+if (( ${+ZSH_HIGHLIGHT_PATTERNS} )); then
+  ZSH_HIGHLIGHT_PATTERNS+=('rm -rf *' 'fg=#eff1f5,bold,bg=#d20f39')
+  ZSH_HIGHLIGHT_PATTERNS+=('rm -fr *' 'fg=#eff1f5,bold,bg=#d20f39')
+fi
 
 
 #==============================================================================
