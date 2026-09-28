@@ -8,7 +8,10 @@
 # .zshrc looks in $ZDOTDIR/plugins first and falls back to the Homebrew and
 # distro paths, so a machine where this script has not run still gets a working
 # shell - just an unpinned one.
-set -euo pipefail
+#
+# No `set -e` at file scope: install_zsh.sh SOURCES this file, and the option
+# would leak into the caller, so one failed clone here would abort the rest of
+# the zsh install. Failures are handled per-plugin below and warn instead.
 
 ZSH_PLUGIN_PINS=(
   "zsh-autosuggestions|https://github.com/zsh-users/zsh-autosuggestions|v0.7.1"
@@ -52,6 +55,9 @@ install_zsh_plugins() {
 }
 
 # Allow running this file directly as well as sourcing it from install_zsh.sh.
+# Strict mode belongs here, where it applies to this script's own run rather
+# than to whatever sourced it.
 if [ "${BASH_SOURCE[0]}" = "${0}" ]; then
+  set -euo pipefail
   install_zsh_plugins
 fi
