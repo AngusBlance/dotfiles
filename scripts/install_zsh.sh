@@ -8,6 +8,11 @@ install_zsh() {
   link_config "$DOTFILES/zsh/.zshrc" "$HOME/.config/zsh/.zshrc"
   link_config "$DOTFILES/starship/starship.toml" "$HOME/.config/starship.toml"
 
+  # zsh-autosuggestions and zsh-syntax-highlighting, pinned. Lives in zsh/
+  # beside the config it serves rather than here with the other installers.
+  source "$DOTFILES/zsh/install-plugins.sh"
+  install_zsh_plugins
+
   if command -v starship > /dev/null 2>&1; then
     echo "  starship already installed"
   else
