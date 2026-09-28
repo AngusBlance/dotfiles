@@ -95,6 +95,12 @@ setopt ALWAYS_TO_END
 : ${LS_COLORS:="di=34:ln=36:so=32:pi=33:ex=31:bd=34;46:cd=34;43:su=30;41:sg=30;46:tw=30;42:ow=30;43"}
 export LS_COLORS
 
+# Complete dotfiles without having to type the leading dot, so `source <Tab>`
+# offers .venv/ and `cd <Tab>` offers .config/. Scoped to the completion system
+# on purpose: a global `setopt GLOB_DOTS` would also make `rm *` and `cp *`
+# match dotfiles, which is a much bigger and more dangerous change.
+_comp_options+=(globdots)
+
 zstyle ':completion:*' menu select
 zstyle ':completion:*' group-name ''
 zstyle ':completion:*' verbose yes
