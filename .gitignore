@@ -2,12 +2,6 @@
 a.out
 tmux/plugins/
 
-# Guard only - the Obsidian vault lives at ~/code/obsidian and is its own repo
-# (github.com/AngusBlance/obsidian). A clone of it ended up in here once;
-# committing that would leave a stray gitlink pointing at a commit nobody else
-# can resolve, so keep the rule in case it happens again.
-obsidian/
-
 # Claude Code local state. Claude never writes these into claude/ itself (only
 # the symlinked skills/ and CLAUDE.md get runtime writes); this guards against
 # copying them in from ~/.claude by hand.
