@@ -1,6 +1,8 @@
 
 [window]
-padding = {x = 10, y = 10}
+padding = {x = 18, y = 4}
+dynamic_padding = true
+decorations = "Buttonless"
 opacity = 1
 startup_mode = "Maximized"
 
@@ -18,13 +20,11 @@ glyph_offset = {x=0, y=0}
 save_to_clipboard = true
 
 [cursor]
-style = {shape = "Block", blinking = "Always"}
-blink_interval = 750
-thickness = 0.15
+style = {shape = "Block", blinking = "Off"}
 
 [terminal]
 osc52 = "CopyPaste"
-shell = { program = "/bin/zsh" }
+shell = { program = "/bin/zsh", args = ["-l"] }
 
 [mouse]
 hide_when_typing = false

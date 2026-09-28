@@ -44,7 +44,8 @@ for pair in "nvim:$FAKE_HOME/.config/nvim:$DOTFILES/nvim" \
             "tmux:$FAKE_HOME/.config/tmux:$DOTFILES/tmux" \
             "alacritty:$FAKE_HOME/.config/alacritty:$DOTFILES/alacritty" \
             "zshenv:$FAKE_HOME/.zshenv:$DOTFILES/zsh/.zshenv" \
-            "zshrc:$FAKE_HOME/.config/zsh/.zshrc:$DOTFILES/zsh/.zshrc"; do
+            "zshrc:$FAKE_HOME/.config/zsh/.zshrc:$DOTFILES/zsh/.zshrc" \
+            "starship:$FAKE_HOME/.config/starship.toml:$DOTFILES/starship/starship.toml"; do
   name="${pair%%:*}"
   rest="${pair#*:}"
   target="${rest%%:*}"

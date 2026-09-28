@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
-# Tests install_tmux's plugin bootstrap (TPM + Catppuccin) against a mocked
-# git and a stub tpm/bin/install_plugins - no real network calls, no real
-# TPM behavior depended on.
+# Tests install_tmux's plugin bootstrap (TPM, which then installs Catppuccin
+# and the other @plugin entries) against a mocked git and a stub
+# tpm/bin/install_plugins - no real network calls, no real TPM behavior
+# depended on.
 #
 # Uses an isolated copy of the repo (without tmux/plugins/) rather than the
 # real dev checkout: tmux/plugins/ is gitignored but often physically
@@ -39,7 +40,9 @@ for b in ls cat mktemp readlink dirname basename cp mv rm mkdir chmod bash env g
 done
 
 # Mocked git: logs the call, then creates the target dir with a stub
-# tpm/bin/install_plugins so the real TPM script never has to run.
+# tpm/bin/install_plugins so the real TPM script never has to run. The stub
+# stands in for TPM installing Catppuccin: it creates plugins/tmux, the
+# directory TPM uses for @plugin 'catppuccin/tmux'.
 cat > "$FAKE_BIN/git" <<EOF
 #!/bin/bash
 echo "\$*" >> "$GIT_LOG"
@@ -48,6 +51,7 @@ if [ "\$1" = "clone" ]; then
   mkdir -p "\$target/bin"
   cat > "\$target/bin/install_plugins" <<'INNER'
 #!/bin/bash
+mkdir -p "\$(dirname "\$0")/../../tmux"
 exit 0
 INNER
   chmod +x "\$target/bin/install_plugins"
@@ -64,11 +68,12 @@ run_install_tmux() {
   '
 }
 
-echo "test: fresh install clones both tpm and catppuccin, reports installed"
+echo "test: fresh install clones tpm, leaves catppuccin to tpm, reports installed"
 out=$(run_install_tmux)
 assert_eq "reports installed" "true" "$(echo "$out" | grep -qF "tmux plugins installed" && echo true || echo false)"
 assert_eq "cloned tpm" "true" "$(grep -qF "tpm" "$GIT_LOG" && echo true || echo false)"
-assert_eq "cloned catppuccin" "true" "$(grep -qF "catppuccin" "$GIT_LOG" && echo true || echo false)"
+assert_eq "did not clone catppuccin by hand" "false" "$(grep -qF "catppuccin" "$GIT_LOG" && echo true || echo false)"
+assert_eq "catppuccin installed by tpm (plugins/tmux)" "true" "$([ -d "$DOTFILES/tmux/plugins/tmux" ] && echo true || echo false)"
 clone_count_before="$(wc -l < "$GIT_LOG")"
 
 echo "test: re-running does NOT re-clone, reports already installed"
