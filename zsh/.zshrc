@@ -33,6 +33,10 @@ unset _brew
 # PATH via Apple's path_helper in a login shell - so add it explicitly too.
 export PATH="$HOME/.local/bin:/usr/local/bin:$PATH"
 typeset -U path PATH  # drop duplicates, keeping the first occurrence
+# fpath needs it too: brew shellenv prepends its site-functions every time it
+# runs, so the same directory was listed three times and compinit scanned it
+# three times.
+typeset -U fpath
 
 export EDITOR="vim"
 export VISUAL="$EDITOR"
@@ -105,6 +109,13 @@ zstyle ':completion:*' menu select
 zstyle ':completion:*' group-name ''
 zstyle ':completion:*' verbose yes
 zstyle ':completion:*:descriptions' format '%F{blue}%B%d%b%f'
+# Describe flags, not just group headings: `git commit -<Tab>` lists --amend
+# with what it does beside it. auto-description fills in a generic line for
+# options whose completer gives no text of its own.
+zstyle ':completion:*:options' description 'yes'
+zstyle ':completion:*:options' auto-description '%d'
+# A visible gutter between a candidate and its description.
+zstyle ':completion:*' list-separator '  ·'
 zstyle ':completion:*' list-colors "${(s.:.)LS_COLORS}"
 zstyle ':completion:*' completer _expand _complete
 
