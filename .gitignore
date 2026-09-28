@@ -2,9 +2,10 @@
 a.out
 tmux/plugins/
 
-# A clone of the Obsidian vault (github.com/AngusBlance/obsidian) sometimes sits
-# here. It is its own git repo, so committing it would leave a stray gitlink
-# pointing at a commit nobody else can resolve.
+# Guard only - the Obsidian vault lives at ~/code/obsidian and is its own repo
+# (github.com/AngusBlance/obsidian). A clone of it ended up in here once;
+# committing that would leave a stray gitlink pointing at a commit nobody else
+# can resolve, so keep the rule in case it happens again.
 obsidian/
 
 # Claude Code local state. Claude never writes these into claude/ itself (only
