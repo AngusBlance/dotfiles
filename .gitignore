@@ -30,3 +30,7 @@ claude/downloads/
 claude/ide/
 claude/*-cache.json
 claude/.last-*
+
+# Planning docs are working artefacts, not config. They live on their own
+# branch (see zsh-fish-like) rather than cluttering the tracked tree.
+plans/
