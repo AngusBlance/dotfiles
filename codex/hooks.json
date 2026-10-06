@@ -1,0 +1,34 @@
+{
+  "hooks": {
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": ": dotfiles_managed_hook; \"$HOME/.codex/dotfiles/scripts/play-sound.sh\" ding.wav >/dev/null 2>&1; \"$HOME/.codex/dotfiles/scripts/tmux-flag.sh\" >/dev/null 2>&1; printf '{}\\n'"
+          }
+        ]
+      }
+    ],
+    "PermissionRequest": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": ": dotfiles_managed_hook; \"$HOME/.codex/dotfiles/scripts/play-sound.sh\" waiting.wav; \"$HOME/.codex/dotfiles/scripts/tmux-flag.sh\""
+          }
+        ]
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": ": dotfiles_managed_hook; \"$HOME/.codex/dotfiles/scripts/tmux-unflag.sh\""
+          }
+        ]
+      }
+    ]
+  }
+}
