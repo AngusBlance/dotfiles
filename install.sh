@@ -45,6 +45,7 @@ echo "== alacritty =="; install_alacritty
 echo "== zsh ==";       install_zsh
 echo "== claude ==";    install_claude_ding
                         install_claude_config
+echo "== codex ==";     install_codex
 
 echo
 echo "Done. Restart your shell (or 'exec zsh') to pick up zsh changes."
