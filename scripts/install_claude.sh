@@ -62,6 +62,7 @@ install_claude_config() {
   mkdir -p "$claude_dir"
   link_config "$DOTFILES/claude/skills" "$claude_dir/skills"
   link_config "$DOTFILES/claude/CLAUDE.md" "$claude_dir/CLAUDE.md"
+  link_config "$DOTFILES/claude/statusline-command.sh" "$claude_dir/statusline-command.sh"
 
   [ -s "$settings" ] || echo '{}' > "$settings"
   if ! jq -e 'type == "object"' "$settings" > /dev/null 2>&1; then
