@@ -17,7 +17,8 @@ offset = {x = 0, y = 0}
 glyph_offset = {x=0, y=0}
 
 [selection]
-save_to_clipboard = true
+# Off: copy-on-select caused intermittent NSPasteboard warnings (orange message bar).
+save_to_clipboard = false
 
 [cursor]
 style = {shape = "Block", blinking = "Off"}
@@ -32,7 +33,11 @@ hide_when_typing = false
 [hints]
 
 [keyboard]
-bindings = [{key = "v", mods = "Alt", action = "ToggleViMode"}]
+bindings = [
+    {key = "v", mods = "Alt", action = "ToggleViMode"},
+    # Share one process to reduce macOS clipboard contention between windows.
+    {key = "N", mods = "Command", action = "CreateNewWindow"},
+]
 
 [debug]
 
