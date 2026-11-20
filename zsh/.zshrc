@@ -41,6 +41,11 @@ typeset -U fpath
 export EDITOR="vim"
 export VISUAL="$EDITOR"
 
+# Claude Code's fullscreen renderer draws on the alternate screen, so nothing
+# reaches tmux's scrollback and prefix [ (copy mode) can't scroll back through
+# the conversation. The classic renderer writes to the normal screen instead.
+export CLAUDE_CODE_DISABLE_ALTERNATE_SCREEN=1
+
 
 #==============================================================================
 # FEATURE 9 - Auto-cd: typing a directory path changes into it
