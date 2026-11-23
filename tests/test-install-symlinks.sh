@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Tests the nvim/tmux/alacritty/zsh installers (link_config) against a
+# Tests the nvim/tmux/ghostty/zsh installers (link_config) against a
 # throwaway fake $HOME — never touches your real ~/.config.
 set -uo pipefail
 
@@ -29,11 +29,11 @@ run_installers() {
     source "$DOTFILES/scripts/lib.sh"
     source "$DOTFILES/scripts/install_nvim.sh"
     source "$DOTFILES/scripts/install_tmux.sh"
-    source "$DOTFILES/scripts/install_alacritty.sh"
+    source "$DOTFILES/scripts/install_ghostty.sh"
     source "$DOTFILES/scripts/install_zsh.sh"
     install_nvim
     install_tmux
-    install_alacritty
+    install_ghostty
     install_zsh
   '
 }
@@ -42,7 +42,7 @@ echo "test: fresh machine (no ~/.config at all) - everything gets symlinked"
 run_installers > /dev/null
 for pair in "nvim:$FAKE_HOME/.config/nvim:$DOTFILES/nvim" \
             "tmux:$FAKE_HOME/.config/tmux:$DOTFILES/tmux" \
-            "alacritty:$FAKE_HOME/.config/alacritty:$DOTFILES/alacritty" \
+            "ghostty:$FAKE_HOME/.config/ghostty:$DOTFILES/ghostty" \
             "zshenv:$FAKE_HOME/.zshenv:$DOTFILES/zsh/.zshenv" \
             "zshrc:$FAKE_HOME/.config/zsh/.zshrc:$DOTFILES/zsh/.zshrc" \
             "starship:$FAKE_HOME/.config/starship.toml:$DOTFILES/starship/starship.toml"; do

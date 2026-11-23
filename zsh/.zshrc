@@ -22,7 +22,7 @@
 #==============================================================================
 # Homebrew: puts brew, and everything brew installs, on PATH. This has to run
 # here and not only in .zprofile - .zprofile is read by LOGIN shells only, and a
-# non-login shell (Alacritty with an explicit `program`, or any `zsh -i`) would
+# non-login shell (a terminal with an explicit shell command, or any `zsh -i`) would
 # otherwise start with no brew, no tmux and no starship.
 for _brew in /opt/homebrew/bin/brew /usr/local/bin/brew; do
   [ -x "$_brew" ] && eval "$("$_brew" shellenv)" && break
@@ -161,7 +161,7 @@ bindkey '^[[B' down-line-or-beginning-search
 #--- FEATURE 1 (keys) - Alt-Right accepts one word of the autosuggestion ------
 # Right and Ctrl-F accept the whole thing already: both are forward-char, which
 # is in the plugin's default accept-widget list, so they need no binding here.
-# forward-word is in its partial-accept list. Two encodings: Alacritty sends
+# forward-word is in its partial-accept list. Two encodings: xterm-style terminals (Alacritty, Ghostty) send
 # the first, several other terminals the second.
 bindkey '^[[1;3C' forward-word
 bindkey '^[^[[C'  forward-word

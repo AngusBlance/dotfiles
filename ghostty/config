@@ -1,0 +1,31 @@
+# Ghostty config (replaces alacritty/). Reload: ctrl+shift+, (cmd+shift+, on macOS).
+# All options + docs: ghostty +show-config --default --docs
+
+# Colours and font. JetBrains Mono and Nerd Font icons are built into Ghostty.
+theme = Catppuccin Latte
+font-size = 12
+
+# Window
+window-padding-x = 18
+window-padding-y = 4
+window-padding-balance = true
+maximize = true
+macos-titlebar-style = hidden
+# Option sends Alt, so zsh's Alt-E / Alt-H / Alt-Right work on macOS.
+macos-option-as-alt = true
+
+# Mouse and selection
+mouse-scroll-multiplier = 3
+# Off: copy-on-select caused clipboard warnings on macOS under Alacritty.
+copy-on-select = false
+
+# Block cursor everywhere (no-cursor stops shell integration switching to a bar).
+cursor-style = block
+cursor-style-blink = false
+# ssh-terminfo: copy Ghostty's terminfo to SSH hosts so they know xterm-ghostty.
+shell-integration-features = no-cursor,ssh-terminfo
+
+# OSC 52: let tmux/nvim read and write the system clipboard.
+clipboard-read = allow
+
+command = /bin/zsh -l

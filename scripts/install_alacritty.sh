@@ -1,6 +1,11 @@
 #!/usr/bin/env bash
-# Symlinks this repo's alacritty/ folder to ~/.config/alacritty.
+# Symlinks this repo's alacritty/ folder to ~/.config/alacritty, only if
+# Alacritty is installed (Ghostty is the default terminal, see install_ghostty).
 install_alacritty() {
+  if ! has_alacritty; then
+    echo "  alacritty not installed, skipping"
+    return 0
+  fi
   link_config "$DOTFILES/alacritty" "$HOME/.config/alacritty"
 
   if ! command -v fc-list > /dev/null 2>&1 || ! command -v unzip > /dev/null 2>&1; then

@@ -24,3 +24,12 @@ link_config() {
   ln -s "$source" "$target"
   echo "  linked: $target -> $source"
 }
+
+# Terminal detection. macOS apps may not put a command on PATH, so also
+# check /Applications.
+has_alacritty() {
+  command -v alacritty > /dev/null 2>&1 || [ -d /Applications/Alacritty.app ]
+}
+has_ghostty() {
+  command -v ghostty > /dev/null 2>&1 || [ -d /Applications/Ghostty.app ]
+}

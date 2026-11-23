@@ -42,6 +42,7 @@ done
 echo "== nvim ==";      install_nvim
 echo "== tmux ==";      install_tmux
 echo "== alacritty =="; install_alacritty
+echo "== ghostty ==";   install_ghostty
 echo "== zsh ==";       install_zsh
 echo "== sioyek ==";    install_sioyek
 echo "== claude ==";    install_claude_ding
