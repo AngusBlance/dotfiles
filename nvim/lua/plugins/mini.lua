@@ -6,6 +6,35 @@ return {
         config = function()
             require("mini.git").setup({})
             require("mini.files").setup({})
+
+            -- Open PDFs in Sioyek instead of as a buffer; everything else unchanged.
+            local function go_in_or_open_pdf(close_on_file)
+                return function()
+                    local entry = MiniFiles.get_fs_entry()
+                    if entry and entry.fs_type == "file" and entry.path:lower():match("%.pdf$") then
+                        if vim.fn.executable("sioyek") == 1 then
+                            vim.system({ "sioyek", entry.path }, { detach = true })
+                            if close_on_file then
+                                MiniFiles.close()
+                            end
+                        else
+                            vim.notify("sioyek not found, run the dotfiles install.sh", vim.log.levels.WARN)
+                        end
+                        return
+                    end
+                    for _ = 1, vim.v.count1 do
+                        MiniFiles.go_in({ close_on_file = close_on_file })
+                    end
+                end
+            end
+            vim.api.nvim_create_autocmd("User", {
+                pattern = "MiniFilesBufferCreate",
+                callback = function(args)
+                    local buf = args.data.buf_id
+                    vim.keymap.set("n", "l", go_in_or_open_pdf(false), { buffer = buf, desc = "Go in / open PDF" })
+                    vim.keymap.set("n", "L", go_in_or_open_pdf(true), { buffer = buf, desc = "Go in plus / open PDF" })
+                end,
+            })
             -- mini.tabline setup per mini-tabline.txt:42-107
 
             require("mini.tabline").setup({})

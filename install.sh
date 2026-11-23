@@ -43,6 +43,7 @@ echo "== nvim ==";      install_nvim
 echo "== tmux ==";      install_tmux
 echo "== alacritty =="; install_alacritty
 echo "== zsh ==";       install_zsh
+echo "== sioyek ==";    install_sioyek
 echo "== claude ==";    install_claude_ding
                         install_claude_config
 echo "== codex ==";     install_codex
