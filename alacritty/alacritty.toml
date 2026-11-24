@@ -40,6 +40,9 @@ bindings = [
 ]
 
 [debug]
+# Hide WARN-level messages: OSC 52 copies (tmux) intermittently hit
+# "NSPasteboard#writeObjects: returned false". Errors still show.
+log_level = "Error"
 
 [general]
 live_config_reload = true
