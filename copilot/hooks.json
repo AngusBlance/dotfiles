@@ -1,0 +1,74 @@
+{
+  "hooks": {
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": ": dotfiles_managed_hook; \"$HOME/.copilot/scripts/play-sound.sh\" ding.wav >/dev/null 2>&1; \"$HOME/.copilot/scripts/tmux-flag.sh\" >/dev/null 2>&1; printf '{}\\n'"
+          }
+        ]
+      }
+    ],
+    "TaskComplete": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": ": dotfiles_managed_hook; \"$HOME/.copilot/scripts/play-sound.sh\" ding.wav >/dev/null 2>&1; \"$HOME/.copilot/scripts/tmux-flag.sh\" >/dev/null 2>&1; printf '{}\\n'"
+          }
+        ]
+      }
+    ],
+    "Notification": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": ": dotfiles_managed_hook; \"$HOME/.copilot/scripts/play-sound.sh\" waiting.wav >/dev/null 2>&1; \"$HOME/.copilot/scripts/tmux-flag.sh\" >/dev/null 2>&1; printf '{}\\n'"
+          }
+        ]
+      }
+    ],
+    "TaskStarted": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": ": dotfiles_managed_hook; \"$HOME/.copilot/scripts/play-sound.sh\" waiting.wav >/dev/null 2>&1; \"$HOME/.copilot/scripts/tmux-flag.sh\" >/dev/null 2>&1; printf '{}\\n'"
+          }
+        ]
+      }
+    ],
+    "PermissionDenied": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": ": dotfiles_managed_hook; \"$HOME/.copilot/scripts/play-sound.sh\" denied.wav >/dev/null 2>&1; printf '{}\\n'"
+          }
+        ]
+      }
+    ],
+    "PermissionRequest": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": ": dotfiles_managed_hook; \"$HOME/.copilot/scripts/play-sound.sh\" waiting.wav >/dev/null 2>&1; \"$HOME/.copilot/scripts/tmux-flag.sh\" >/dev/null 2>&1; printf '{}\\n'"
+          }
+        ]
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": ": dotfiles_managed_hook; \"$HOME/.copilot/scripts/tmux-unflag.sh\" >/dev/null 2>&1; printf '{}\\n'"
+          }
+        ]
+      }
+    ]
+  }
+}
